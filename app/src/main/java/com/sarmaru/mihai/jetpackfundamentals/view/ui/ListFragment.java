@@ -42,7 +42,9 @@ public class ListFragment extends Fragment {
     }
 
     private void onGoToDetails() {
-        NavDirections action = ListFragmentDirections.actionDetail();
+        ListFragmentDirections.ActionDetail action = ListFragmentDirections.actionDetail();
+        // Send arguments
+        action.setDogUuid(7);
         Navigation.findNavController(floatingActionButtonList).navigate(action);
     }
 }

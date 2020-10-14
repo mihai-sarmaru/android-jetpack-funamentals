@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sarmaru.mihai.jetpackfundamentals.R;
@@ -22,6 +23,11 @@ public class DetailFragment extends Fragment {
 
     @BindView(R.id.floatingActionButtonDetail)
     FloatingActionButton floatingActionButtonDetail;
+
+    @BindView(R.id.textViewDetailsFragment)
+    TextView textViewDetails;
+
+    private int dogUuid;
 
     public DetailFragment() {
     }
@@ -39,6 +45,12 @@ public class DetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // Uses lambda expression
         floatingActionButtonDetail.setOnClickListener(v -> onGoToList());
+
+        // Get arguments
+        if (getArguments() != null) {
+            dogUuid = DetailFragmentArgs.fromBundle(getArguments()).getDogUuid();
+            textViewDetails.setText(String.valueOf(dogUuid));
+        }
     }
 
     private void onGoToList() {
