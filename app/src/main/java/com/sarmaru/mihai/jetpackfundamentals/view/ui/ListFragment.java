@@ -20,9 +20,6 @@ import butterknife.ButterKnife;
 
 public class ListFragment extends Fragment {
 
-    @BindView(R.id.floatingActionButtonList)
-    FloatingActionButton floatingActionButtonList;
-
     public ListFragment() {
     }
 
@@ -32,19 +29,5 @@ public class ListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
         return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // Uses lambda expression
-        floatingActionButtonList.setOnClickListener(v -> onGoToDetails());
-    }
-
-    private void onGoToDetails() {
-        ListFragmentDirections.ActionDetail action = ListFragmentDirections.actionDetail();
-        // Send arguments
-        action.setDogUuid(7);
-        Navigation.findNavController(floatingActionButtonList).navigate(action);
     }
 }
