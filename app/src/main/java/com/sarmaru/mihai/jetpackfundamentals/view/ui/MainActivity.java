@@ -1,8 +1,10 @@
-package com.sarmaru.mihai.jetpackfundamentals;
+package com.sarmaru.mihai.jetpackfundamentals.view.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.sarmaru.mihai.jetpackfundamentals.R;
 
 public class MainActivity extends AppCompatActivity {
 
