@@ -12,6 +12,7 @@ import com.sarmaru.mihai.jetpackfundamentals.db.DogBreedDao;
 import com.sarmaru.mihai.jetpackfundamentals.db.DogDatabase;
 import com.sarmaru.mihai.jetpackfundamentals.model.DogBreed;
 import com.sarmaru.mihai.jetpackfundamentals.repository.DogApiService;
+import com.sarmaru.mihai.jetpackfundamentals.util.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +35,26 @@ public class DogListViewModel extends AndroidViewModel {
     private AsyncTask<List<DogBreed>, Void, List<DogBreed>> insertTask;
     private AsyncTask<Void, Void, List<DogBreed>> retrieveDogsTask;
 
+    private SharedPreferencesHelper preferencesHelper = SharedPreferencesHelper.getInstance(getApplication());
+    private long refreshTime = 5 * 60 * 1000 * 1000 * 1000L; // 5 minutes
+
     public DogListViewModel(@NonNull Application application) {
         super(application);
     }
 
     public void refresh() {
+        long updateTime = preferencesHelper.getUpdateTime();
+        long currentTime = System.nanoTime();
+
+        if (updateTime != 0 && currentTime - updateTime < refreshTime) {
+            fetchFromDatabase();
+        } else {
+            fetchFromRemote();
+        }
+    }
+
+    public void refreshBypassCache() {
         fetchFromRemote();
-//        fetchFromDatabase();
     }
 
     public void fetchFromDatabase() {
@@ -121,6 +135,7 @@ public class DogListViewModel extends AndroidViewModel {
         @Override
         protected void onPostExecute(List<DogBreed> dogBreeds) {
             dogsRetrieved(dogBreeds);
+            preferencesHelper.saveUpdateTime(System.nanoTime());
         }
     }
 
