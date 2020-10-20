@@ -4,14 +4,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sarmaru.mihai.jetpackfundamentals.R;
 import com.sarmaru.mihai.jetpackfundamentals.model.DogBreed;
 import com.sarmaru.mihai.jetpackfundamentals.util.GlideUtil;
+import com.sarmaru.mihai.jetpackfundamentals.view.ui.ListFragmentDirections;
 
 import java.util.List;
 
@@ -38,6 +41,7 @@ public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewH
 
     @Override
     public void onBindViewHolder(@NonNull DogViewHolder holder, int position) {
+        LinearLayout linearLayout = holder.itemView.findViewById(R.id.list_item_layout);
         ImageView imageViewDog = holder.itemView.findViewById(R.id.image_view_dog_list);
         TextView dogName = holder.itemView.findViewById(R.id.text_view_list_title);
         TextView lifespan = holder.itemView.findViewById(R.id.text_view_list_subtitle);
@@ -47,6 +51,13 @@ public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewH
 
         // Use Glide to load images
         GlideUtil.loadImage(imageViewDog, dogsList.get(position).imageUrl, GlideUtil.getProgressDrawable(imageViewDog.getContext()));
+
+        //
+        linearLayout.setOnClickListener(v -> {
+            ListFragmentDirections.ActionDetail action = ListFragmentDirections.actionDetail();
+            action.setDogUuid(dogsList.get(position).uuid);
+            Navigation.findNavController(linearLayout).navigate(action);
+        });
     }
 
     @Override
