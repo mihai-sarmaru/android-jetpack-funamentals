@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sarmaru.mihai.jetpackfundamentals.R;
 import com.sarmaru.mihai.jetpackfundamentals.model.DogBreed;
+import com.sarmaru.mihai.jetpackfundamentals.util.GlideUtil;
 
 import java.util.List;
 
@@ -39,10 +40,13 @@ public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewH
     public void onBindViewHolder(@NonNull DogViewHolder holder, int position) {
         ImageView imageViewDog = holder.itemView.findViewById(R.id.image_view_dog_list);
         TextView dogName = holder.itemView.findViewById(R.id.text_view_list_title);
-        TextView lifespan =holder.itemView.findViewById(R.id.text_view_list_subtitle);
+        TextView lifespan = holder.itemView.findViewById(R.id.text_view_list_subtitle);
 
         dogName.setText(dogsList.get(position).dogBreed);
         lifespan.setText(dogsList.get(position).lifeSpan);
+
+        // Use Glide to load images
+        GlideUtil.loadImage(imageViewDog, dogsList.get(position).imageUrl, GlideUtil.getProgressDrawable(imageViewDog.getContext()));
     }
 
     @Override
