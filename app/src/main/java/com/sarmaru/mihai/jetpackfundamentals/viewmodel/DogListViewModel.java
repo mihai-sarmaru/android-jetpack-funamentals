@@ -1,11 +1,14 @@
 package com.sarmaru.mihai.jetpackfundamentals.viewmodel;
 
 import android.app.Application;
+import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.sarmaru.mihai.jetpackfundamentals.db.DogBreedDao;
+import com.sarmaru.mihai.jetpackfundamentals.db.DogDatabase;
 import com.sarmaru.mihai.jetpackfundamentals.model.DogBreed;
 import com.sarmaru.mihai.jetpackfundamentals.repository.DogApiService;
 
@@ -44,9 +47,7 @@ public class DogListViewModel extends AndroidViewModel {
                         .subscribeWith(new DisposableSingleObserver<List<DogBreed>>() {
                             @Override
                             public void onSuccess(@io.reactivex.annotations.NonNull List<DogBreed> dogBreeds) {
-                                dogsList.setValue(dogBreeds);
-                                dogsLoadError.setValue(false);
-                                loading.setValue(false);
+                                // Store info in DB
                             }
 
                             @Override
@@ -59,9 +60,41 @@ public class DogListViewModel extends AndroidViewModel {
         );
     }
 
+    private void dogsRetrieved(List<DogBreed> dogList) {
+        dogsList.setValue(dogList);
+        dogsLoadError.setValue(false);
+        loading.setValue(false);
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
+    }
+
+    private class InsertDogsTask extends AsyncTask<List<DogBreed>, Void, List<DogBreed>> {
+
+        @Override
+        protected List<DogBreed> doInBackground(List<DogBreed>... lists) {
+            List<DogBreed> dogBreedList = lists[0];
+
+            // Insert into DB received list
+            DogBreedDao dogBreedDao = DogDatabase.getInstance(getApplication()).dogBreedDao();
+            dogBreedDao.deleteAllDogs();
+            List<DogBreed> newDogList = new ArrayList<>(dogBreedList);
+            List<Integer> result = dogBreedDao.insertAll(newDogList.toArray(new DogBreed[0]));
+
+            // Attach UID to the object
+            for (int i = 0; i < dogBreedList.size(); i++) {
+                dogBreedList.get(i).uuid = result.get(i);
+            }
+
+            return dogBreedList;
+        }
+
+        @Override
+        protected void onPostExecute(List<DogBreed> dogBreeds) {
+            dogsRetrieved(dogBreeds);
+        }
     }
 }
