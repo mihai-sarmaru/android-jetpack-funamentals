@@ -94,11 +94,11 @@ public class DogListViewModel extends AndroidViewModel {
             DogBreedDao dogBreedDao = DogDatabase.getInstance(getApplication()).dogBreedDao();
             dogBreedDao.deleteAllDogs();
             List<DogBreed> newDogList = new ArrayList<>(dogBreedList);
-            List<Integer> result = dogBreedDao.insertAll(newDogList.toArray(new DogBreed[0]));
+            List<Long> result = dogBreedDao.insertAll(newDogList.toArray(new DogBreed[0]));
 
             // Attach UID to the object
             for (int i = 0; i < dogBreedList.size(); i++) {
-                dogBreedList.get(i).uuid = result.get(i);
+                dogBreedList.get(i).uuid = result.get(i).intValue();
             }
 
             return dogBreedList;
