@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sarmaru.mihai.jetpackfundamentals.R;
 import com.sarmaru.mihai.jetpackfundamentals.model.DogBreed;
+import com.sarmaru.mihai.jetpackfundamentals.util.GlideUtil;
 import com.sarmaru.mihai.jetpackfundamentals.viewmodel.DogDetailViewModel;
 
 import butterknife.BindInt;
@@ -67,7 +68,7 @@ public class DetailFragment extends Fragment {
 
         // Set view model
         dogDetailViewModel = ViewModelProviders.of(this).get(DogDetailViewModel.class);
-        dogDetailViewModel.getLiveData();
+        dogDetailViewModel.fetch(dogUuid);
 
         // Observe View Model
         observeViewModel();
@@ -79,6 +80,11 @@ public class DetailFragment extends Fragment {
             textViewDogPurpose.setText(dogLiveData.bredFor);
             textViewDogTemperament.setText(dogLiveData.temperament);
             textViewDogLifeSpan.setText(dogLiveData.lifeSpan);
+
+            // Load image from URL using Glide
+            if (dogLiveData.imageUrl != null) {
+                GlideUtil.loadImage(imageViewDogImage, dogLiveData.imageUrl, GlideUtil.getProgressDrawable(imageViewDogImage.getContext()));
+            }
         });
     }
 }
