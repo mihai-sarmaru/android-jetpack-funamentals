@@ -32,6 +32,7 @@ public class DogListViewModel extends AndroidViewModel {
     private CompositeDisposable disposable = new CompositeDisposable();
 
     private AsyncTask<List<DogBreed>, Void, List<DogBreed>> insertTask;
+    private AsyncTask<Void, Void, List<DogBreed>> retrieveDogsTask;
 
     public DogListViewModel(@NonNull Application application) {
         super(application);
@@ -39,6 +40,13 @@ public class DogListViewModel extends AndroidViewModel {
 
     public void refresh() {
         fetchFromRemote();
+//        fetchFromDatabase();
+    }
+
+    public void fetchFromDatabase() {
+        loading.setValue(true);
+        retrieveDogsTask = new RetrieveDogsTask();
+        retrieveDogsTask.execute();
     }
 
     private void fetchFromRemote() {
@@ -82,6 +90,12 @@ public class DogListViewModel extends AndroidViewModel {
             insertTask.cancel(true);
             insertTask = null;
         }
+
+        if (retrieveDogsTask != null) {
+            retrieveDogsTask.cancel(true);
+            retrieveDogsTask = null;
+        }
+
     }
 
     private class InsertDogsTask extends AsyncTask<List<DogBreed>, Void, List<DogBreed>> {
@@ -107,6 +121,20 @@ public class DogListViewModel extends AndroidViewModel {
         @Override
         protected void onPostExecute(List<DogBreed> dogBreeds) {
             dogsRetrieved(dogBreeds);
+        }
+    }
+
+    private class RetrieveDogsTask extends AsyncTask<Void, Void, List<DogBreed>> {
+
+        @Override
+        protected List<DogBreed> doInBackground(Void... voids) {
+            return DogDatabase.getInstance(getApplication()).dogBreedDao().getAllDogs();
+        }
+
+        @Override
+        protected void onPostExecute(List<DogBreed> dogBreeds) {
+            dogsRetrieved(dogBreeds);
+            Toast.makeText(getApplication(), "Retrieved from DB", Toast.LENGTH_SHORT).show();
         }
     }
 }
