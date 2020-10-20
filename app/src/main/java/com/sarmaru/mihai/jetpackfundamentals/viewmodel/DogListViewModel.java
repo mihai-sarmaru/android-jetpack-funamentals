@@ -2,6 +2,7 @@ package com.sarmaru.mihai.jetpackfundamentals.viewmodel;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -30,6 +31,8 @@ public class DogListViewModel extends AndroidViewModel {
     private DogApiService dogApiService = new DogApiService();
     private CompositeDisposable disposable = new CompositeDisposable();
 
+    private AsyncTask<List<DogBreed>, Void, List<DogBreed>> insertTask;
+
     public DogListViewModel(@NonNull Application application) {
         super(application);
     }
@@ -48,6 +51,9 @@ public class DogListViewModel extends AndroidViewModel {
                             @Override
                             public void onSuccess(@io.reactivex.annotations.NonNull List<DogBreed> dogBreeds) {
                                 // Store info in DB
+                                insertTask = new InsertDogsTask();
+                                insertTask.execute(dogBreeds);
+                                Toast.makeText(getApplication(), "Retrieved from API", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -70,6 +76,12 @@ public class DogListViewModel extends AndroidViewModel {
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
+
+        // Cancel AsyncTask to prevent memory leak
+        if (insertTask != null) {
+            insertTask.cancel(true);
+            insertTask = null;
+        }
     }
 
     private class InsertDogsTask extends AsyncTask<List<DogBreed>, Void, List<DogBreed>> {
