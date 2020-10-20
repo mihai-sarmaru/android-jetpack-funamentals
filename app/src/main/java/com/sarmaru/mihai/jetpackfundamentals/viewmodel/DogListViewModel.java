@@ -53,6 +53,10 @@ public class DogListViewModel extends AndroidViewModel {
         }
     }
 
+    public void refreshBypassCache() {
+        fetchFromRemote();
+    }
+
     public void fetchFromDatabase() {
         loading.setValue(true);
         retrieveDogsTask = new RetrieveDogsTask();

@@ -71,6 +71,16 @@ public class ListFragment extends Fragment {
         dogRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         dogRecyclerView.setAdapter(dogListAdapter);
 
+        // Refresh functionality
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            dogRecyclerView.setVisibility(View.GONE);
+            textViewError.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+
+            dogListViewModel.refreshBypassCache();
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
         observeViewModel();
     }
 
