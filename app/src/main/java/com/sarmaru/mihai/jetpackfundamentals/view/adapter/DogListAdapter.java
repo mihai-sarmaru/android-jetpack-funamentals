@@ -16,11 +16,12 @@ import com.sarmaru.mihai.jetpackfundamentals.R;
 import com.sarmaru.mihai.jetpackfundamentals.databinding.DogListBinding;
 import com.sarmaru.mihai.jetpackfundamentals.model.DogBreed;
 import com.sarmaru.mihai.jetpackfundamentals.util.GlideUtil;
+import com.sarmaru.mihai.jetpackfundamentals.view.listener.DogClickListener;
 import com.sarmaru.mihai.jetpackfundamentals.view.ui.ListFragmentDirections;
 
 import java.util.List;
 
-public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewHolder> {
+public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewHolder> implements DogClickListener {
 
     private List<DogBreed> dogsList;
 
@@ -45,11 +46,22 @@ public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewH
     @Override
     public void onBindViewHolder(@NonNull DogViewHolder holder, int position) {
         holder.itemView.setDog(dogsList.get(position));
+        holder.itemView.setListener(this);
     }
 
     @Override
     public int getItemCount() {
         return dogsList.size();
+    }
+
+    @Override
+    public void onDogClicked(View view) {
+        String uuidString = ((TextView)view.findViewById(R.id.dogId)).getText().toString();
+        int uuid = Integer.valueOf(uuidString);
+
+        ListFragmentDirections.ActionDetail action = ListFragmentDirections.actionDetail();
+        action.setDogUuid(uuid);
+        Navigation.findNavController(view).navigate(action);
     }
 
     class DogViewHolder extends RecyclerView.ViewHolder {
