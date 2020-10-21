@@ -6,12 +6,17 @@
         <variable
             name="dog"
             type="com.sarmaru.mihai.jetpackfundamentals.model.DogBreed" />
+
+        <variable
+            name="palette"
+            type="com.sarmaru.mihai.jetpackfundamentals.palette.DogPalette" />
     </data>
 
     <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@{palette.color}"
         tools:context=".view.ui.DetailFragment">
 
         <ImageView
