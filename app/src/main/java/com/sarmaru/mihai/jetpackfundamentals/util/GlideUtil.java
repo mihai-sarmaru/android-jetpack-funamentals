@@ -3,6 +3,7 @@ package com.sarmaru.mihai.jetpackfundamentals.util;
 import android.content.Context;
 import android.widget.ImageView;
 
+import androidx.databinding.BindingAdapter;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
@@ -29,5 +30,10 @@ public class GlideUtil {
         progressDrawable.setCenterRadius(50f);
         progressDrawable.start();
         return progressDrawable;
+    }
+
+    @BindingAdapter("android:imageUrl")
+    public static void loadImage(ImageView view, String url) {
+        loadImage(view, url, getProgressDrawable(view.getContext()));
     }
 }
