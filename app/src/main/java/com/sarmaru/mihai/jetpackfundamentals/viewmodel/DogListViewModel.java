@@ -43,7 +43,21 @@ public class DogListViewModel extends AndroidViewModel {
         super(application);
     }
 
+    private void checkCacheDuration() {
+        String cachePref = preferencesHelper.getCacheDuration();
+        if (!cachePref.equals("")) {
+            try {
+                int cachedPrefInt = Integer.parseInt(cachePref);
+                refreshTime = cachedPrefInt * 1000 * 1000 * 1000L; // nanoseconds
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void refresh() {
+        checkCacheDuration();
+
         long updateTime = preferencesHelper.getUpdateTime();
         long currentTime = System.nanoTime();
 
