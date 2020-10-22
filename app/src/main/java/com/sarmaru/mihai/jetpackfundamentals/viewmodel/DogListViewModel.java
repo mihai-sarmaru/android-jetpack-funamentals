@@ -12,6 +12,7 @@ import com.sarmaru.mihai.jetpackfundamentals.db.DogBreedDao;
 import com.sarmaru.mihai.jetpackfundamentals.db.DogDatabase;
 import com.sarmaru.mihai.jetpackfundamentals.model.DogBreed;
 import com.sarmaru.mihai.jetpackfundamentals.repository.DogApiService;
+import com.sarmaru.mihai.jetpackfundamentals.util.NotificationsHelper;
 import com.sarmaru.mihai.jetpackfundamentals.util.SharedPreferencesHelper;
 
 import java.util.ArrayList;
@@ -55,6 +56,8 @@ public class DogListViewModel extends AndroidViewModel {
 
     public void refreshBypassCache() {
         fetchFromRemote();
+        // Notify user
+        NotificationsHelper.getInstance(getApplication()).createDogNotification();
     }
 
     public void fetchFromDatabase() {
