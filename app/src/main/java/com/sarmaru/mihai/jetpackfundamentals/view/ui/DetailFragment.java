@@ -45,6 +45,8 @@ public class DetailFragment extends Fragment {
     private DogDetailViewModel dogDetailViewModel;
     private FragmentDetailBinding binding;
 
+    private Boolean sendSmsStarted = false;
+
     public DetailFragment() {
     }
 
@@ -117,12 +119,20 @@ public class DetailFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_send_sms:
-                // TODO
+                // prevent user from clicking multiple times
+                if (!sendSmsStarted) {
+                    sendSmsStarted = true;
+                    ((MainActivity) getActivity()).checkSmsPermission();
+                }
                 break;
             case R.id.action_share:
                 // TODO
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onPermissionResult(Boolean permissionGranted) {
+        
     }
 }
