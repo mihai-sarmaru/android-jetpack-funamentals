@@ -136,10 +136,18 @@ public class DetailFragment extends Fragment {
                 }
                 break;
             case R.id.action_share:
-                // TODO
+                shareDogContent();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void shareDogContent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Shared Dog");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, currentDog.dogBreed + " - " + currentDog.lifeSpan);
+        startActivity(Intent.createChooser(shareIntent, "Share with"));
     }
 
     public void onPermissionResult(Boolean permissionGranted) {
