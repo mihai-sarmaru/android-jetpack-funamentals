@@ -1,11 +1,13 @@
 package com.sarmaru.mihai.jetpackfundamentals.view.ui;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -30,7 +32,9 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sarmaru.mihai.jetpackfundamentals.R;
 import com.sarmaru.mihai.jetpackfundamentals.databinding.FragmentDetailBinding;
+import com.sarmaru.mihai.jetpackfundamentals.databinding.SendSmsDialogBinding;
 import com.sarmaru.mihai.jetpackfundamentals.model.DogBreed;
+import com.sarmaru.mihai.jetpackfundamentals.model.SmsInfo;
 import com.sarmaru.mihai.jetpackfundamentals.palette.DogPalette;
 import com.sarmaru.mihai.jetpackfundamentals.util.GlideUtil;
 import com.sarmaru.mihai.jetpackfundamentals.viewmodel.DogDetailViewModel;
@@ -46,6 +50,8 @@ public class DetailFragment extends Fragment {
     private FragmentDetailBinding binding;
 
     private Boolean sendSmsStarted = false;
+
+    private DogBreed currentDog;
 
     public DetailFragment() {
     }
@@ -77,6 +83,7 @@ public class DetailFragment extends Fragment {
 
     private void observeViewModel() {
         dogDetailViewModel.dogLiveData.observe(this, dogLiveData -> {
+            currentDog = dogLiveData;
             binding.setDog(dogLiveData);
             if (dogLiveData.imageUrl != null) {
                 setBackgroundColor(dogLiveData.imageUrl);
@@ -133,6 +140,36 @@ public class DetailFragment extends Fragment {
     }
 
     public void onPermissionResult(Boolean permissionGranted) {
-        
+        if (isAdded() && sendSmsStarted && permissionGranted) {
+            String smsText = currentDog.dogBreed + " - " + currentDog.lifeSpan;
+            SmsInfo smsInfo = new SmsInfo("", smsText, currentDog.imageUrl);
+
+            // Set custom dialog binding
+            SendSmsDialogBinding dialogBinding = DataBindingUtil.inflate(
+                    LayoutInflater.from(getContext()),
+                    R.layout.send_sms_dialog,
+                    null,
+                    false);
+            dialogBinding.setSmsInfo(smsInfo);
+
+            // Instantiate custom dialog
+            new AlertDialog.Builder(getContext())
+                    .setView(dialogBinding.getRoot())
+                    .setPositiveButton("Send SMS", (dialog, which) -> {
+                        if (!dialogBinding.editTextSmsDestination.getText().toString().isEmpty()) {
+                            smsInfo.to = dialogBinding.editTextSmsDestination.getText().toString();
+                            // Send SMS
+                            sendSMS(smsInfo);
+                        }
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> {})
+                    .show();
+
+            sendSmsStarted = false;
+        }
+    }
+
+    private void sendSMS(SmsInfo smsInfo) {
+
     }
 }
