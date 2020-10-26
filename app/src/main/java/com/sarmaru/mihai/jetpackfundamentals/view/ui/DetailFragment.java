@@ -1,6 +1,8 @@
 package com.sarmaru.mihai.jetpackfundamentals.view.ui;
 
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.palette.graphics.Palette;
 
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -170,6 +173,10 @@ public class DetailFragment extends Fragment {
     }
 
     private void sendSMS(SmsInfo smsInfo) {
-
+        int SMS_REQUEST_CODE = 0;
+        Intent smsIntent = new Intent(getContext(), MainActivity.class);
+        PendingIntent smsPendingIntent = PendingIntent.getActivity(getContext(), SMS_REQUEST_CODE, smsIntent, 0);
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(smsInfo.to, null, smsInfo.text, smsPendingIntent, null);
     }
 }
