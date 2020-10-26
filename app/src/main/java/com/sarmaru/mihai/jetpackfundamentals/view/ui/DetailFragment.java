@@ -16,6 +16,9 @@ import androidx.navigation.Navigation;
 import androidx.palette.graphics.Palette;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -50,6 +53,7 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         FragmentDetailBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false);
         this.binding = binding;
+        setHasOptionsMenu(true);
         return binding.getRoot();
     }
 
@@ -101,5 +105,24 @@ public class DetailFragment extends Fragment {
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                     }
                 });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.details_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_send_sms:
+                // TODO
+                break;
+            case R.id.action_share:
+                // TODO
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
